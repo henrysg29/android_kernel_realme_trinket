@@ -129,6 +129,3 @@ endif
 obj-$(CONFIG_SND_SOC_AW87339) += aw87339_dlkm.o
 aw87339_dlkm-y := $(AW87339_OBJS)
 
-# inject some build related information
-DEFINES += -DBUILD_TIMESTAMP=\"$(shell date -u +'%Y-%m-%dT%H:%M:%SZ')\"
-
