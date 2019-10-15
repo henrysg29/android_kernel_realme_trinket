@@ -41,14 +41,6 @@ unsigned int get_project(void)
         return format->nproject;
 }
 
-unsigned int is_project(OPPO_PROJECT project)
-{
-        return (get_project() == project?1:0);
-}
-#ifdef CONFIG_PRODUCT_REALME
-EXPORT_SYMBOL(is_project);
-#endif /* CONFIG_PRODUCT_REALME */
-
 unsigned char get_PCB_Version(void)
 {
         if (format == NULL) {
