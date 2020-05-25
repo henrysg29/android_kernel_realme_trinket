@@ -1,0 +1,19 @@
+menu "Realme product selection"
+
+config PRODUCT_REALME
+	bool "Realme devices"
+	help
+	  This enables support for Realme devices.
+
+config PRODUCT_REALME_SM6125
+	bool "Realme SM6125-Common"
+        select PRODUCT_REALME
+        depends on ARCH_TRINKET
+
+config PRODUCT_REALME_RMX1911
+	bool "Realme 5"
+	select PRODUCT_REALME_SM6125
+	help
+	  This enables support for Realme 5.
+
+endmenu
