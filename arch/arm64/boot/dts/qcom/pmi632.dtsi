@@ -191,15 +191,37 @@
 			#cooling-cells = <2>;
 
 			qcom,pmic-revid = <&pmi632_revid>;
+		//ifndef CONFIG_PRODUCT_REALME
+		//	io-channels = <&pmi632_vadc ADC_USB_IN_V_16>,
+		//		      <&pmi632_vadc ADC_USB_IN_I>,
+		//		      <&pmi632_vadc ADC_CHG_TEMP>,
+		//		      <&pmi632_vadc ADC_DIE_TEMP>;
+		//	io-channel-names = "usb_in_voltage",
+		//			   "usb_in_current",
+		//			   "chg_temp",
+		//			   "die_temp";
+		//#else /* CONFIG_PRODUCT_REALME */
+			/* Bin2.Zhang@ODM_WT.BSP.Charger.Basic.1941873, 20190505, Modify for skin/cpu therm */
 			io-channels = <&pmi632_vadc ADC_USB_IN_V_16>,
 				      <&pmi632_vadc ADC_USB_IN_I>,
 				      <&pmi632_vadc ADC_CHG_TEMP>,
-				      <&pmi632_vadc ADC_DIE_TEMP>;
+				      <&pmi632_vadc ADC_DIE_TEMP>,
+				      <&pm6125_vadc ADC_GPIO3_PU2>,
+				      <&pm6125_vadc ADC_AMUX_THM2_PU2>;
 			io-channel-names = "usb_in_voltage",
 					   "usb_in_current",
 					   "chg_temp",
-					   "die_temp";
-
+					   "die_temp",
+					   "skin_temp",
+					   "cpu_temp";
+		//#endif /* CONFIG_PRODUCT_REALME */
+			//#ifdef CONFIG_PRODUCT_REALME
+			//Haibin1.Zhang@ODM_WT.BSP.Storage.otg, 2019/04/18, Add for otg configuration
+			pinctrl-names = "usbid_default","usbid_sleep";
+			pinctrl-0 = <&usbid_default>;
+			pinctrl-1 = <&usbid_sleep>;
+			qcom,usbid-gpio = <&tlmm 47 0>;
+			//#endif /* CONFIG_PRODUCT_REALME */
 			qcom,chgr@1000 {
 				reg = <0x1000 0x100>;
 				interrupts =
@@ -353,10 +375,18 @@
 			#size-cells = <1>;
 
 			qcom,pmic-revid = <&pmi632_revid>;
-			io-channels = <&pmi632_vadc ADC_BAT_THERM_PU2>,
+			//#ifndef CONFIG_PRODUCT_REALME
+			//Bin2.Zhang@ODM_WT.BSP.Charger.Basic.1941873, 20190404, Modify for battery temperature scale function
+			//io-channels = <&pmi632_vadc ADC_BAT_THERM_PU2>,
+			//	      <&pmi632_vadc ADC_BAT_ID_PU2>;
+			//io-channel-names = "batt-therm",
+			//		   "batt-id";
+			//#else /* CONFIG_PRODUCT_REALME */
+			io-channels = <&pmi632_vadc ADC_BAT_THERM_PU1>,
 				      <&pmi632_vadc ADC_BAT_ID_PU2>;
 			io-channel-names = "batt-therm",
 					   "batt-id";
+			//#endif /* CONFIG_PRODUCT_REALME */
 
 			qcom,qgauge@4800 {
 				status = "okay";
@@ -496,7 +526,11 @@
 			interrupt-names = "sc-irq";
 
 			qcom,pmic-revid = <&pmi632_revid>;
+//#ifdef CONFIG_PRODUCT_REALME
+//Hongzhu.Su@ODM_WT.MM.Display.Lcd.1941873, Start 2019/05/17, Adjust lcd power on/off sequence
 			qcom,voltage-step-ramp;
+//Hongzhu.Su@ODM_WT.MM.Display.Lcd.1941873, End 2019/05/17, Adjust lcd power on/off sequence
+//#endif /* CONFIG_PRODUCT_REALME */
 
 			lcdb_ldo_vreg: ldo {
 				label = "ldo";
@@ -571,7 +605,12 @@
 				qcom,max-current = <500>;
 				qcom,default-led-trigger = "torch0_trigger";
 				qcom,id = <0>;
+				/*ifdef  CONFIG_PRODUCT_REALME*/
+				qcom,current-ma = <110>;
+				/*else
 				qcom,current-ma = <300>;
+				endif CONFIG_PRODUCT_REALME
+				*/
 				qcom,ires-ua = <12500>;
 				qcom,hdrm-voltage-mv = <400>;
 				qcom,hdrm-vol-hi-lo-win-mv = <100>;
@@ -728,7 +767,7 @@
 
 		trips {
 			pmi632_low_soc: low-soc {
-				temperature = <10>;
+				temperature = <5>;
 				hysteresis = <0>;
 				type = "passive";
 			};

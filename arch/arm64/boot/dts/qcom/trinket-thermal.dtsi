@@ -117,7 +117,7 @@
 
 	quiet-therm-adc {
 		polling-delay-passive = <0>;
-		polling-delay = <5000>;
+		polling-delay = <0>;
 		thermal-governor = "user_space";
 		thermal-sensors = <&pm6125_adc_tm ADC_AMUX_THM2_PU2>;
 		wake-capable-sensor;
@@ -159,7 +159,8 @@
 			};
 		};
 	};
-
+//#ifdef CONFIG_PRODUCT_REALME //Cong.Dai@psw.bsp.tp, 2019.05.17, del ADC_GPIO2_PU2 used for A board
+/*
 	skin-therm-adc {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
@@ -174,7 +175,8 @@
 			};
 		};
 	};
-
+*/
+//#endif
 	camera-ftherm-adc {
 		polling-delay-passive = <0>;
 		polling-delay = <5000>;

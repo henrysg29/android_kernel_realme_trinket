@@ -17,8 +17,11 @@
 &bolero {
 	qcom,num-macros = <4>;
 	qcom,va-without-decimation;
+	//ifdef CONFIG_PRODUCT_REALME
+	//Gong.Chen@ODM_WT.mm.audiodriver.Machine, 2019/06/13, Modify for wcd9370
 	slew_rate_reg1 = <0xD8E000 0x0>;
 	slew_rate_val1 = <0x3 0x0>;
+	//endif CONFIG_PRODUCT_REALME
 	tx_macro: tx-macro@0a460000 {
 		compatible = "qcom,tx-macro";
 		reg = <0x0a460000 0x0>;
@@ -47,6 +50,10 @@
 				<5 DMIC6 0x4>, <5 DMIC7 0x8>;
 			qcom,swr-num-dev = <1>;
 			qcom,swr-clock-stop-mode0 = <1>;
+			//ifdef CONFIG_PRODUCT_REALME
+			//Gong.Chen@ODM_WT.mm.audiodriver.Machine, 2019/04/08, Modify for wcd9370
+			qcom,swr-mstr-irq-wakeup-capable = <1>;
+			//endif CONFIG_PRODUCT_REALME
 			wcd937x_tx_slave: wcd937x-tx-slave {
 				compatible = "qcom,wcd937x-slave";
 				reg = <0x0 0x01170223>;
@@ -95,6 +102,8 @@
 		qcom,wsa-swr-gpios = <&wsa_swr_gpios>;
 		qcom,wsa-bcl-pmic-params = /bits/ 8 <0x00 0x00 0x1E>;
 		swr0: wsa_swr_master {
+			//Gong.Chen@ODM_WT.mm.audiodriver.Machine, 2019/07/17, Add for codec
+			status = "disabled";
 			compatible = "qcom,swr-mstr";
 			#address-cells = <2>;
 			#size-cells = <0>;
@@ -109,29 +118,36 @@
 				<6 SPKR_R_BOOST 0x3>, <7 SPKR_L_VI 0x3>,
 				<8 SPKR_R_VI 0x3>;
 			qcom,swr-num-dev = <1>;
+			//ifdef CONFIG_PRODUCT_REALME
+			//Gong.Chen@ODM_WT.mm.audiodriver.Machine, 2019/04/08, Modify for wcd9370
 			wsa881x_0211: wsa881x@20170211 {
 				compatible = "qcom,wsa881x";
+				status = "disabled";
 				reg = <0x0 0x20170211>;
 				qcom,spkr-sd-n-node = <&wsa_spkr_en1>;
 			};
 
 			wsa881x_0212: wsa881x@20170212 {
 				compatible = "qcom,wsa881x";
+				status = "disabled";
 				reg = <0x0 0x20170212>;
 				qcom,spkr-sd-n-node = <&wsa_spkr_en1>;
 			};
 
 			wsa881x_0213: wsa881x@21170213 {
 				compatible = "qcom,wsa881x";
+				status = "disabled";
 				reg = <0x0 0x21170213>;
 				qcom,spkr-sd-n-node = <&wsa_spkr_en1>;
 			};
 
 			wsa881x_0214: wsa881x@21170214 {
 				compatible = "qcom,wsa881x";
+				status = "disabled";
 				reg = <0x0 0x21170214>;
 				qcom,spkr-sd-n-node = <&wsa_spkr_en1>;
 			};
+			//endif CONFIG_PRODUCT_REALME
 		};
 	};
 
@@ -171,9 +187,13 @@
 		cdc-vdd-buck-supply = <&L14A>;
 		qcom,cdc-vdd-buck-voltage = <1800000 1800000>;
 		qcom,cdc-vdd-buck-current = <650000>;
+		//ifdef CONFIG_PRODUCT_REALME
+		//Gong.Chen@ODM_WT.mm.audiodriver.Machine, 2019/04/08, Modify for micbias
+		qcom,ext-pa-gpio = <&tlmm 94 0x00>;
 
-		qcom,cdc-micbias1-mv = <1800>;
-		qcom,cdc-micbias2-mv = <1800>;
+		qcom,cdc-micbias1-mv = <2700>;
+		qcom,cdc-micbias2-mv = <2700>;
+		//endif CONFIG_PRODUCT_REALME
 		qcom,cdc-micbias3-mv = <1800>;
 
 		qcom,cdc-static-supplies = "cdc-vdd-ldo-rxtx",
@@ -185,18 +205,14 @@
 &sm6150_snd {
 	qcom,model = "trinket-idp-snd-card";
 	qcom,msm-mi2s-master = <1>, <1>, <1>, <1>, <1>;
-	qcom,ext-disp-audio-rx = <1>;
+	qcom,ext-disp-audio-rx = <0>;
+	//ifdef CONFIG_PRODUCT_REALME
+	//Gong.Chen@ODM_WT.mm.audiodriver.Machine, 2019/04/08, Modify for audio route
 	qcom,audio-routing =
+		"AMIC1", "MIC BIAS1",
+		"MIC BIAS1", "Analog Mic1",
 		"AMIC2", "MIC BIAS2",
 		"MIC BIAS2", "Analog Mic2",
-		"TX DMIC0", "MIC BIAS1",
-		"MIC BIAS1", "Digital Mic0",
-		"TX DMIC1", "MIC BIAS1",
-		"MIC BIAS1", "Digital Mic1",
-		"TX DMIC2", "MIC BIAS3",
-		"MIC BIAS3", "Digital Mic2",
-		"TX DMIC3", "MIC BIAS3",
-		"MIC BIAS3", "Digital Mic3",
 		"TX_AIF1 CAP", "VA_MCLK",
 		"TX_AIF2 CAP", "VA_MCLK",
 		"RX AIF1 PB", "VA_MCLK",
@@ -211,25 +227,19 @@
 		"IN3_AUX", "AUX_OUT",
 		"TX SWR_ADC0", "ADC1_OUTPUT",
 		"TX SWR_ADC2", "ADC2_OUTPUT",
-		"WSA SRC0_INP", "SRC0",
-		"WSA_TX DEC0_INP", "TX DEC0 MUX",
-		"WSA_TX DEC1_INP", "TX DEC1 MUX",
+
 		"RX_TX DEC0_INP", "TX DEC0 MUX",
 		"RX_TX DEC1_INP", "TX DEC1 MUX",
 		"RX_TX DEC2_INP", "TX DEC2 MUX",
-		"RX_TX DEC3_INP", "TX DEC3 MUX",
-		"SpkrLeft IN", "WSA_SPK1 OUT",
-		"SpkrRight IN", "WSA_SPK2 OUT",
-		"WSA_SPK1 OUT", "VA_MCLK",
-		"WSA_SPK2 OUT", "VA_MCLK";
+		"RX_TX DEC3_INP", "TX DEC3 MUX";
 	qcom,msm-mbhc-hphl-swh = <1>;
-	qcom,msm-mbhc-gnd-swh = <1>;
-	qcom,cdc-dmic01-gpios = <&cdc_dmic01_gpios>;
-	qcom,cdc-dmic23-gpios = <&cdc_dmic23_gpios>;
-	asoc-codec  = <&stub_codec>, <&bolero>, <&ext_disp_audio_codec>;
-	asoc-codec-names = "msm-stub-codec.1", "bolero_codec",
-				"msm-ext-disp-audio-codec-rx";
-	qcom,wsa-max-devs = <1>;
+	qcom,msm-mbhc-gnd-swh = <0>;
+	qcom,cdc-dmic01-gpios;
+	qcom,cdc-dmic23-gpios;
+	asoc-codec  = <&stub_codec>, <&bolero>;
+	asoc-codec-names = "msm-stub-codec.1", "bolero_codec";
+	qcom,wsa-max-devs = <0>;
+
 	qcom,wsa-devs = <&wsa881x_0211>, <&wsa881x_0212>,
 			<&wsa881x_0213>, <&wsa881x_0214>;
 	qcom,wsa-aux-dev-prefix = "SpkrLeft", "SpkrRight",
@@ -238,6 +248,9 @@
 	qcom,codec-aux-devs = <&wcd937x_codec>;
 	qcom,msm_audio_ssr_devs = <&audio_apr>, <&q6core>,
 				<&bolero>;
+	//Gong.Chen@ODM_WT.mm.audiodriver.Machine.1919162, 2019/07/19, Modify for headset
+	qcom,mbhc-audio-jack-type = "4-pole-jack";
+	//endif CONFIG_PRODUCT_REALME
 };
 
 &soc {

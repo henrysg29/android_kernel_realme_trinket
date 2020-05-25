@@ -101,8 +101,10 @@ pm8008_9: qcom,pm8008@9 {
 			regulator-name = "pm8008_l6";
 			regulator-min-microvolt = <1500000>;
 			regulator-max-microvolt = <3400000>;
-			qcom,min-dropout-voltage = <300000>;
-			qcom,hpm-min-load = <10000>;
+			/*WT000007@ODM_WT.BSP.SENSOR,2019/06/12, Add PM8008 power supply for EVT1 SUT and before*/
+			qcom,init-voltage = <300000>;
+			regulator-always-on;
+			regulator-boot-on;
 		};
 
 		L7P: qcom,pm8008-l7@4400 {

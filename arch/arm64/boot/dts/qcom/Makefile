@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0
+ifneq ($(CONFIG_PRODUCT_REALME),y)
 dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-sbc.dtb
 dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-db820c.dtb
 dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk01.dtb
@@ -6,6 +7,8 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-mtp.dtb
 dtb-$(CONFIG_ARCH_QCOM)	+= msm8992-bullhead-rev-101.dtb
 dtb-$(CONFIG_ARCH_QCOM)	+= msm8994-angler-rev-101.dtb
 dtb-$(CONFIG_ARCH_QCOM)	+= msm8996-mtp.dtb
+endif
+
 ifeq ($(CONFIG_ARM64),y)
 dtb-$(CONFIG_ARCH_QCS405) += qcs405-rumi.dtb \
 		qcs405-iot-sku1.dtb \
@@ -199,6 +202,8 @@ dtb-$(CONFIG_ARCH_SDMMAGPIE)	+= sdmmagpie-rumi.dtb \
 	sdmmagpie-dual-display-idp.dtb
 endif
 
+ifneq ($(CONFIG_PRODUCT_REALME),y)
+
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
 	dtbo-$(CONFIG_ARCH_TRINKET) += \
 		trinket-rumi-overlay.dtbo \
@@ -224,6 +229,15 @@ dtb-$(CONFIG_ARCH_TRINKET)	+= trinket-rumi.dtb \
 	trinket-usbc-external-codec-idp.dtb \
 	trinket-usbc-idp.dtb \
 	trinket-dp-idp.dtb
+endif
+
+else
+ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
+	dtbo-$(CONFIG_ARCH_TRINKET) += trinket-idp-overlay.dtbo
+	trinket-idp-overlay.dtbo-base := trinket.dtb
+else
+	dtb-$(CONFIG_ARCH_TRINKET)	+= trinket-idp.dtb
+endif
 endif
 
 dtb-$(CONFIG_ARCH_SDXPRAIRIE) += sdxprairie-rumi.dtb \
