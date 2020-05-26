@@ -111,6 +111,10 @@ struct wcd937x_pdata {
 
 	struct cdc_regulator *regulator;
 	int num_supplies;
+	//ifdef CONFIG_PRODUCT_REALME
+	//Gong.Chen@ODM_WT.mm.audiodriver.Machine, 2019/04/08, Modify for speaker
+	unsigned int ext_pa_gpio;
+	//endif CONFIG_PRODUCT_REALME
 };
 
 struct wcd_ctrl_platform_data {

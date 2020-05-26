@@ -15,6 +15,9 @@
 #include <linux/wait.h>
 #include <linux/stringify.h>
 #include <linux/power_supply.h>
+#ifdef CONFIG_PRODUCT_REALME
+#include <linux/headset_notifier.h>
+#endif
 #include "wcdcal-hwdep.h"
 #include <sound/jack.h>
 
