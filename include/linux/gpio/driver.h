@@ -127,11 +127,21 @@ struct gpio_chip {
 						unsigned offset, int value);
 	int			(*get)(struct gpio_chip *chip,
 						unsigned offset);
+#ifdef CONFIG_PRODUCT_REALME
+//Fuchun.Liao@Mobile.BSP.CHG 2016-01-19 add for oppo vooc adapter update
+	int 		(*get_oppo_vooc)(struct gpio_chip *chip,
+							unsigned offset);
+#endif /* CONFIG_PRODUCT_REALME */
 	void			(*set)(struct gpio_chip *chip,
 						unsigned offset, int value);
 	void			(*set_multiple)(struct gpio_chip *chip,
 						unsigned long *mask,
 						unsigned long *bits);
+#ifdef CONFIG_PRODUCT_REALME
+//Fuchun.Liao@Mobile.BSP.CHG 2016-01-19 add for oppo vooc adapter update
+	void			(*set_oppo_vooc)(struct gpio_chip *chip,
+						unsigned offset, int value);
+#endif /* CONFIG_PRODUCT_REALME */
 	int			(*set_config)(struct gpio_chip *chip,
 					      unsigned offset,
 					      unsigned long config);
