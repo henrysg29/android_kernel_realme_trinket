@@ -109,9 +109,17 @@ static long media_device_enum_entities(struct media_device *mdev, void *arg)
 	if (ent->name)
 		strlcpy(entd->name, ent->name, sizeof(entd->name));
 	entd->type = ent->function;
+#ifdef CONFIG_PRODUCT_REALME
+	entd->revision = ent->revision;
+#else
 	entd->revision = 0;		/* Unused */
+#endif /*CONFIG_PRODUCT_REALME*/
 	entd->flags = ent->flags;
+#ifdef CONFIG_PRODUCT_REALME
+	entd->group_id = ent->group_id;
+#else
 	entd->group_id = 0;		/* Unused */
+#endif /*CONFIG_PRODUCT_REALME*/
 	entd->pads = ent->num_pads;
 	entd->links = ent->num_links - ent->num_backlinks;
 

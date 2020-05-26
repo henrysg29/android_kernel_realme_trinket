@@ -287,6 +287,10 @@ struct media_entity {
 			u32 minor;
 		} dev;
 	} info;
+#ifdef CONFIG_PRODUCT_REALME
+	u32 revision;
+	u32 group_id;
+#endif
 };
 
 /**
