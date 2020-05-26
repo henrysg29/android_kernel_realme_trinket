@@ -408,6 +408,10 @@ static int dwc3_ep0_handle_status(struct dwc3 *dwc,
 	dwc->ep0_usb_req.request.buf = dwc->setup_buf;
 	dwc->ep0_usb_req.request.complete = dwc3_ep0_status_cmpl;
 
+#ifdef CONFIG_PRODUCT_REALME  /* zhangkun@BSP.CHG.Basic, 2019/04/24, Add for cannot connect DJI*/
+	dwc->ep0_usb_req.request.dma = DMA_ERROR_CODE;
+#endif
+
 	return __dwc3_gadget_ep0_queue(dep, &dwc->ep0_usb_req);
 }
 
@@ -864,6 +868,10 @@ static int dwc3_ep0_set_sel(struct dwc3 *dwc, struct usb_ctrlrequest *ctrl)
 	dwc->ep0_usb_req.request.length = dep->endpoint.maxpacket;
 	dwc->ep0_usb_req.request.buf = dwc->setup_buf;
 	dwc->ep0_usb_req.request.complete = dwc3_ep0_set_sel_cmpl;
+
+#ifdef CONFIG_PRODUCT_REALME  /* zhangkun@BSP.CHG.Basic, 2019/02/28, Add for cannot connect DJI*/
+	dwc->ep0_usb_req.request.dma = DMA_ERROR_CODE;
+#endif /*CONFIG_PRODUCT_REALME*/
 
 	return __dwc3_gadget_ep0_queue(dep, &dwc->ep0_usb_req);
 }
