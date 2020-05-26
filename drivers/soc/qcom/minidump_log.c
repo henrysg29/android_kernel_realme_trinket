@@ -22,6 +22,14 @@
 #include <linux/mm.h>
 #include <linux/sched/task.h>
 
+#ifdef CONFIG_PRODUCT_REALME //Fanhong.Kong@PSW.BSP.CHG,add 2017/10/10 for O mini dump
+#include <linux/uaccess.h>
+#include <asm-generic/irq_regs.h>
+#include <linux/irq.h>
+#include <linux/percpu.h>
+#include <soc/qcom/memory_dump.h>
+#endif/*CONFIG_PRODUCT_REALME*/
+
 static void __init register_log_buf(void)
 {
 	char **log_bufp;
