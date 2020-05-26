@@ -42,6 +42,16 @@
 #include "sde_core_perf.h"
 #include "sde_trace.h"
 
+#ifdef CONFIG_PRODUCT_REALME
+/* Gou shengjun@PSW.MM.Display.Lcd.Stability, 2018-11-21
+ * Add for drm notifier for display connect
+*/
+#include <linux/msm_drm_notify.h>
+#include <linux/notifier.h>
+
+extern int msm_drm_notifier_call_chain(unsigned long val, void *v);
+#endif
+
 #define SDE_PSTATES_MAX (SDE_STAGE_MAX * 4)
 #define SDE_MULTIRECT_PLANE_MAX (SDE_STAGE_MAX * 2)
 

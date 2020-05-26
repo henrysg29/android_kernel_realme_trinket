@@ -66,6 +66,57 @@ static const struct drm_prop_enum_list e_qsync_mode[] = {
 	{SDE_RM_QSYNC_CONTINUOUS_MODE,	"continuous"},
 };
 
+#ifdef CONFIG_PRODUCT_REALME
+//Hongzhu.Su@ODM_WT.MM.Display.Lcd.1941873, Start 2019/05/04,Add blmap for BL
+static int backlight_remapping_into_tddic_reg(int level_brightness, struct dsi_display *display)
+{
+	int level_temp, value_a, value_b;
+	int level = level_brightness;
+
+	if ( level > 0) {
+		pr_debug(" %s  level %lld \n", __func__, level);
+
+		if (display->panel->bl_config.blmap){
+			if (level%32 > 0)
+				level_temp = level/32 + 1;
+			else
+				level_temp = level/32;
+
+			level_temp = level_temp - 1;
+			if((level_temp*2 + 1) > display->panel->bl_config.blmap_size){
+				pr_err(" %s android brightness level is more than 2047 or LCM blmap_size is setting short than 128 = %d\n", __func__, display->panel->bl_config.blmap_size);
+				return 0;
+			}
+			value_a = display->panel->bl_config.blmap[level_temp*2];
+			value_b = display->panel->bl_config.blmap[level_temp*2 + 1];
+
+			if (level <= 383)
+				level = value_a*level/100 + value_b;
+			else
+				level = value_a*level/100 - value_b;
+
+			pr_debug(" %s value_a %d   value_b %d level_temp %d level %lld\n", __func__, value_a, value_b, level_temp, level);
+			if (level < 0){
+				pr_err(" %s backlight value had been converted into a minus type = %d\n", __func__, level);
+				return 0;
+			}
+		}
+
+	if (level < display->panel->bl_config.bl_min_level)
+		level = display->panel->bl_config.bl_min_level;
+	if (level > display->panel->bl_config.bl_max_level)
+			level = display->panel->bl_config.bl_max_level;
+	return level;
+	} else if (level == 0){
+		return 0;
+	} else {
+		pr_err(" %s android brightness level is error = %d\n", __func__, level);
+		return 0;
+	}
+}
+//Hongzhu.Su@ODM_WT.MM.Display.Lcd.1941873, End 2019/05/04,Add blmap for BL
+#endif /* CONFIG_PRODUCT_REALME */
+
 static int sde_backlight_device_update_status(struct backlight_device *bd)
 {
 	int brightness;
@@ -88,8 +139,15 @@ static int sde_backlight_device_update_status(struct backlight_device *bd)
 		brightness = display->panel->bl_config.bl_max_level;
 
 	/* map UI brightness into driver backlight level with rounding */
+#ifndef CONFIG_PRODUCT_REALME
+//Hongzhu.Su@ODM_WT.MM.Display.Lcd.1941873, Start 2019/05/04,Add blmap for BL
 	bl_lvl = mult_frac(brightness, display->panel->bl_config.bl_max_level,
 			display->panel->bl_config.brightness_max_level);
+#else /* CONFIG_PRODUCT_REALME */
+	bl_lvl=backlight_remapping_into_tddic_reg(brightness, display);
+	pr_info("LCD_LOG0 %s  level after %lld \n", __func__, bl_lvl);
+//Hongzhu.Su@ODM_WT.MM.Display.Lcd.1941873, End 2019/05/04,Add blmap for BL
+#endif /* CONFIG_PRODUCT_REALME */
 
 	if (!bl_lvl && brightness)
 		bl_lvl = 1;
@@ -518,6 +576,11 @@ static int _sde_connector_update_bl_scale(struct sde_connector *c_conn)
 	struct dsi_backlight_config *bl_config;
 	int rc = 0;
 
+#ifdef CONFIG_PRODUCT_REALME
+/*Gou shengjun@PSW.MM.Display.LCD.Stable,2019-03-7 fix backlight race problem */
+	struct backlight_device *bd;
+#endif /* CONFIG_PRODUCT_REALME */
+
 	if (!c_conn) {
 		SDE_ERROR("Invalid params sde_connector null\n");
 		return -EINVAL;
@@ -531,11 +594,26 @@ static int _sde_connector_update_bl_scale(struct sde_connector *c_conn)
 		return -EINVAL;
 	}
 
+#ifdef CONFIG_PRODUCT_REALME
+/*Gou shengjun@PSW.MM.Display.LCD.Stable,2019-03-7 fix backlight race problem */
+	bd = c_conn->bl_device;
+	if (!bd) {
+		SDE_ERROR("Invalid params backlight_device null\n");
+		return -EINVAL;
+	}
+
+	mutex_lock(&bd->update_lock);
+#endif /* CONFIG_PRODUCT_REALME */
+
 	bl_config = &dsi_display->panel->bl_config;
 
 	if (dsi_display->panel->bl_config.bl_update ==
 		BL_UPDATE_DELAY_UNTIL_FIRST_FRAME && !c_conn->allow_bl_update) {
 		c_conn->unset_bl_level = bl_config->bl_level;
+#ifdef CONFIG_PRODUCT_REALME
+/*Gou shengjun@PSW.MM.Display.LCD.Stable,2019-03-7 fix backlight race problem */
+		mutex_unlock(&bd->update_lock);
+#endif /* CONFIG_PRODUCT_REALME */
 		return 0;
 	}
 
@@ -558,6 +636,11 @@ static int _sde_connector_update_bl_scale(struct sde_connector *c_conn)
 	rc = c_conn->ops.set_backlight(&c_conn->base,
 			dsi_display, bl_config->bl_level);
 	c_conn->unset_bl_level = 0;
+
+#ifdef CONFIG_PRODUCT_REALME
+/*Gou shengjun@PSW.MM.Display.LCD.Stable,2019-03-7 fix backlight race problem */
+	mutex_unlock(&bd->update_lock);
+#endif /* CONFIG_PRODUCT_REALME */
 
 	return rc;
 }
@@ -724,6 +807,13 @@ void sde_connector_helper_bridge_enable(struct drm_connector *connector)
 				BL_UPDATE_DELAY_UNTIL_FIRST_FRAME)
 		sde_encoder_wait_for_event(c_conn->encoder,
 				MSM_ENC_TX_COMPLETE);
+
+#ifdef CONFIG_PRODUCT_REALME
+//Hongzhu.Su@ODM_WT.MM.Display.Lcd.1941873, Start 2019/08/1, Adjust LCD timing t7 more than 50ms to satisfy spec
+		msleep(15);
+//Hongzhu.Su@ODM_WT.MM.Display.Lcd.1941873, End 2019/08/1, Adjust LCD timing t7 more than 50ms to satisfy spec
+#endif /* CONFIG_PRODUCT_REALME */
+
 	c_conn->allow_bl_update = true;
 
 	if (c_conn->bl_device) {

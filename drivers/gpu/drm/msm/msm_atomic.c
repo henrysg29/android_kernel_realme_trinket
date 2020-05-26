@@ -72,11 +72,23 @@ EXPORT_SYMBOL(msm_drm_unregister_client);
  * @v: notifier data, inculde display id and display blank
  *     event(unblank or power down).
  */
+#ifndef CONFIG_PRODUCT_REALME
+/* Gou shengjun@PSW.MM.Display.Lcd.Stability, 2018-05-31
+* add for export drm_notifier
+*/
 static int msm_drm_notifier_call_chain(unsigned long val, void *v)
 {
 	return blocking_notifier_call_chain(&msm_drm_notifier_list, val,
 					    v);
 }
+#else /*CONFIG_PRODUCT_REALME*/
+int msm_drm_notifier_call_chain(unsigned long val, void *v)
+{
+	return blocking_notifier_call_chain(&msm_drm_notifier_list, val,
+					    v);
+}
+EXPORT_SYMBOL(msm_drm_notifier_call_chain);
+#endif /*CONFIG_PRODUCT_REALME*/
 
 /* block until specified crtcs are no longer pending update, and
  * atomically mark them as pending update
@@ -256,8 +268,13 @@ msm_disable_outputs(struct drm_device *dev, struct drm_atomic_state *old_state)
 			blank = MSM_DRM_BLANK_POWERDOWN;
 			notifier_data.data = &blank;
 			notifier_data.id = crtc_idx;
+#ifndef CONFIG_PRODUCT_REALME
+/* Gou shengjun@PSW.MM.Display.Lcd.Stability, 2018-05-31
+ * remove original drm notify
+*/
 			msm_drm_notifier_call_chain(MSM_DRM_EARLY_EVENT_BLANK,
 						     &notifier_data);
+#endif
 		}
 		/*
 		 * Each encoder has at most one connector (since we always steal
@@ -277,8 +294,13 @@ msm_disable_outputs(struct drm_device *dev, struct drm_atomic_state *old_state)
 		if (connector->state->crtc &&
 			connector->state->crtc->state->active_changed) {
 			DRM_DEBUG_ATOMIC("Notify blank\n");
+#ifndef CONFIG_PRODUCT_REALME
+/* Gou shengjun@PSW.MM.Display.Lcd.Stability, 2018-05-31
+ * remove original drm notify
+*/
 			msm_drm_notifier_call_chain(MSM_DRM_EVENT_BLANK,
 						&notifier_data);
+#endif
 		}
 	}
 
@@ -495,8 +517,13 @@ static void msm_atomic_helper_commit_modeset_enables(struct drm_device *dev,
 			notifier_data.id =
 				connector->state->crtc->index;
 			DRM_DEBUG_ATOMIC("Notify early unblank\n");
+#ifndef CONFIG_PRODUCT_REALME
+/* Gou shengjun@PSW.MM.Display.Lcd.Stability, 2018-05-31
+ * remove original drm notify
+*/
 			msm_drm_notifier_call_chain(MSM_DRM_EARLY_EVENT_BLANK,
 					    &notifier_data);
+#endif
 		}
 		/*
 		 * Each encoder has at most one connector (since we always steal
@@ -550,8 +577,13 @@ static void msm_atomic_helper_commit_modeset_enables(struct drm_device *dev,
 		if (splash || (connector->state->crtc &&
 			connector->state->crtc->state->active_changed)) {
 			DRM_DEBUG_ATOMIC("Notify unblank\n");
+#ifndef CONFIG_PRODUCT_REALME
+/* Gou shengjun@PSW.MM.Display.Lcd.Stability, 2018-05-31
+ * remove original drm notify
+*/
 			msm_drm_notifier_call_chain(MSM_DRM_EVENT_BLANK,
 					    &notifier_data);
+#endif
 		}
 	}
 	SDE_ATRACE_END("msm_enable");
