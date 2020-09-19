@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0
+ifneq ($(CONFIG_PRODUCT_REALME_SM6125),y)
 dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-sbc.dtb
 dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-db820c.dtb
 dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk01.dtb
@@ -6,6 +7,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-mtp.dtb
 dtb-$(CONFIG_ARCH_QCOM)	+= msm8992-bullhead-rev-101.dtb
 dtb-$(CONFIG_ARCH_QCOM)	+= msm8994-angler-rev-101.dtb
 dtb-$(CONFIG_ARCH_QCOM)	+= msm8996-mtp.dtb
+endif
 
 dtb-$(CONFIG_ARCH_QCS403) += qcs403-iot-sku1.dtb \
 			qcs403-iot-sku2.dtb \
@@ -229,6 +231,18 @@ dtb-$(CONFIG_ARCH_SDMMAGPIE)	+= sdmmagpie-rumi.dtb \
 endif
 
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
+
+ifeq ($(CONFIG_PRODUCT_REALME_SM6125),y)
+	dtbo-$(CONFIG_ARCH_TRINKET) += trinket-idp-overlay.dtbo
+	trinket-idp-overlay.dtbo-base := trinket.dtb
+	
+	dtbo-$(CONFIG_ARCH_TRINKET) += trinket-idp-overlay-19743.dtbo
+	trinket-idp-overlay-19743.dtbo-base := trinket-19743.dtb
+	dtbo-$(CONFIG_ARCH_TRINKET) += trinket-idp-overlay-19632.dtbo
+	trinket-idp-overlay-19632.dtbo-base := trinket-19632.dtb
+	dtbo-$(CONFIG_ARCH_TRINKET) += trinket-idp-overlay-19631.dtbo
+	trinket-idp-overlay-19631.dtbo-base := trinket-19631.dtb
+else
 	dtbo-$(CONFIG_ARCH_TRINKET) += \
 		trinket-rumi-overlay.dtbo \
 		trinket-idp-overlay.dtbo \
@@ -245,6 +259,14 @@ trinket-external-codec-idp-overlay.dtbo-base := trinket.dtb
 trinket-usbc-external-codec-idp-overlay.dtbo-base := trinket.dtb
 trinket-usbc-idp-overlay.dtbo-base := trinket.dtb
 trinket-dp-idp-overlay.dtbo-base := trinket.dtb
+endif
+
+else
+
+ifeq ($(CONFIG_PRODUCT_REALME_SM6125),y)
+	dtb-$(CONFIG_ARCH_TRINKET)	+= trinket-idp.dtb
+	dtb-$(CONFIG_ARCH_TRINKET)	+= trinket-idp-19632.dtb
+	dtb-$(CONFIG_ARCH_TRINKET)	+= trinket-idp-19743.dtb
 else
 dtb-$(CONFIG_ARCH_TRINKET)	+= trinket-rumi.dtb \
 	trinket-idp.dtb \
@@ -253,6 +275,8 @@ dtb-$(CONFIG_ARCH_TRINKET)	+= trinket-rumi.dtb \
 	trinket-usbc-external-codec-idp.dtb \
 	trinket-usbc-idp.dtb \
 	trinket-dp-idp.dtb
+endif
+
 endif
 
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
