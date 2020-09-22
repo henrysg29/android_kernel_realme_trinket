@@ -13,6 +13,11 @@ obj-$(CONFIG_DUMMY) += dummy.o
 obj-$(CONFIG_EQUALIZER) += eql.o
 obj-$(CONFIG_IFB) += ifb.o
 obj-$(CONFIG_MACSEC) += macsec.o
+#ifdef CONFIG_PRODUCT_REALME_SM6125
+#Junyuan.Huang@PSW.CN.WiFi.Network.1471780, 2018/06/26,
+#Add for limit speed function
+obj-$(CONFIG_IMQ) += imq.o
+#endif /* CONFIG_PRODUCT_REALME_SM6125 */
 obj-$(CONFIG_MACVLAN) += macvlan.o
 obj-$(CONFIG_MACVTAP) += macvtap.o
 obj-$(CONFIG_MII) += mii.o
