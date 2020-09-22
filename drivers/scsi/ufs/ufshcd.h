@@ -259,6 +259,10 @@ struct ufs_desc_size {
 	int interc_desc;
 	int unit_desc;
 	int conf_desc;
+#ifdef CONFIG_PRODUCT_REALME_SM6125
+//Hexiaosen@PSW.BSP. 2019/11/19. Add for check storage endurance
+	int hlth_desc;
+#endif
 };
 
 /**
