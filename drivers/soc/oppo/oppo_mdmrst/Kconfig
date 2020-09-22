@@ -1,0 +1,7 @@
+# ifdef CONFIG_PRODUCT_REALME_SM6125
+# yixue.ge add for config oppo software common soft
+config RECORD_MDMRST
+bool "config record mdmrst"
+help
+    define this config to count the modem restart times.
+#endif /* CONFIG_PRODUCT_REALME_SM6125 */
