@@ -19,6 +19,15 @@
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include "internal.h"
+#ifdef CONFIG_PRODUCT_REALME_SM6125
+/* Huacai.Zhou@PSW.BSP.Kernel.MM, 2018-06-26, add ion total used account*/
+#include <linux/oppo_ion.h>
+#endif /*CONFIG_PRODUCT_REALME_SM6125*/
+
+#ifdef CONFIG_PRODUCT_REALME_SM6125
+//Jiheng.Xie@TECH.BSP.Performance, 2019-07-22, add for  gpu total used account
+extern unsigned long gpu_total(void);
+#endif /*CONFIG_PRODUCT_REALME_SM6125*/
 
 void __attribute__((weak)) arch_report_meminfo(struct seq_file *m)
 {
@@ -154,6 +163,15 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
 	show_val_kb(m, "CmaFree:        ",
 		    global_zone_page_state(NR_FREE_CMA_PAGES));
 #endif
+#if defined(CONFIG_PRODUCT_REALME_SM6125) && defined(CONFIG_ION)
+/* Huacai.Zhou@PSW.BSP.Kernel.MM, 2018-06-26, add ion total used account*/
+			show_val_kb(m, "IonTotalCache:  ", global_zone_page_state(NR_IONCACHE_PAGES));
+    	show_val_kb(m, "IonTotalUsed:   ", ion_total() >> PAGE_SHIFT);
+#endif /*CONFIG_PRODUCT_REALME_SM6125*/
+#ifdef CONFIG_PRODUCT_REALME_SM6125
+//Jiheng.Xie@TECH.BSP.Performance, 2019-07-22, add for gpu total used account
+	show_val_kb(m, "GPUTotalUsed:   ", gpu_total() >> PAGE_SHIFT);
+#endif /*CONFIG_PRODUCT_REALME_SM6125*/
 
 	hugetlb_report_meminfo(m);
 
