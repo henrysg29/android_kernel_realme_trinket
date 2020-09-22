@@ -96,6 +96,13 @@ struct nf_conn {
 	/* all members below initialized via memset */
 	struct { } __nfct_init_offset;
 
+
+	#ifdef CONFIG_PRODUCT_REALME_SM6125
+	//Yuan.Huang@PSW.CN.WiFi.Network.internet.1461349, 2018/06/18,
+	//Add for WeChat lucky money recognition
+	u32 oppo_app_uid;
+	#endif /* CONFIG_PRODUCT_REALME_SM6125 */
+
 	/* If we were expected by an expectation, this will be it */
 	struct nf_conn *master;
 
