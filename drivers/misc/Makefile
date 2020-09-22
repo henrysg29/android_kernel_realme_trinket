@@ -90,3 +90,10 @@ $(obj)/lkdtm_rodata_objcopy.o: $(obj)/lkdtm_rodata.o FORCE
 obj-$(CONFIG_OKL4_USER_VIPC)    += okl4-vipc.o
 obj-$(CONFIG_OKL4_GUEST)        += okl4-panic.o
 obj-$(CONFIG_OKL4_LINK_SHBUF)    += okl4-link-shbuf.o
+#ifdef CONFIG_PRODUCT_REALME_SM6125
+#Fuchun.Liao@BSP.CHG.Basic, 2018/11/06, Add for oppo rf cable monitor
+obj-$(CONFIG_OPPO_RF_CABLE_MONITOR)				+= oppo_rf_cable_monitor.o
+#endif
+# Mengmeng.Wang@SRC.System, 2018/08/28, Add for oiface
+obj-y				+= schedx.o
+#endif
