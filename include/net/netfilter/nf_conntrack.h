@@ -97,11 +97,11 @@ struct nf_conn {
 	u8 __nfct_init_offset[0];
 
 
-	#ifdef VENDOR_EDIT
+	#ifdef CONFIG_PRODUCT_REALME_TRINKET
 	//Yuan.Huang@PSW.CN.WiFi.Network.internet.1461349, 2018/06/18,
 	//Add for WeChat lucky money recognition
 	u32 oppo_app_uid;
-	#endif /* VENDOR_EDIT */
+	#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 
 	/* If we were expected by an expectation, this will be it */
 	struct nf_conn *master;

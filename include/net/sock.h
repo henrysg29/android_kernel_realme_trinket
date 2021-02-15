@@ -185,11 +185,11 @@ struct sock_common {
 	struct proto		*skc_prot;
 	possible_net_t		skc_net;
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 //Jiemin.Zhu@PSW.Android.OppoFeature.TrafficMonitor, 2018/06/28, Add for net comsuption statistics for
 //process which use the same uid
 	char skc_cmdline[TASK_COMM_LEN];
-#endif /* VENDOR_EDIT */
+#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 
 #if IS_ENABLED(CONFIG_IPV6)
 	struct in6_addr		skc_v6_daddr;
@@ -1837,7 +1837,7 @@ static inline void sk_dst_confirm(struct sock *sk)
 
 static inline void sock_confirm_neigh(struct sk_buff *skb, struct neighbour *n)
 {
-	#ifndef VENDOR_EDIT
+	#ifndef CONFIG_PRODUCT_REALME_TRINKET
 	//Wei.Wang@PSW.CN.WiFi.Network.internet.1357567, 2018/04/27,
 	//Remove for [1357567],some AP doesn't send arp when it needs to send data to DUT
 	//We remove this code to send arp more frequently to notify our mac to AP
@@ -1851,7 +1851,7 @@ static inline void sock_confirm_neigh(struct sk_buff *skb, struct neighbour *n)
 		if (sk && sk->sk_dst_pending_confirm)
 			sk->sk_dst_pending_confirm = 0;
 	}
-	#endif /* VENDOR_EDIT */
+	#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 }
 
 bool sk_mc_loop(struct sock *sk);

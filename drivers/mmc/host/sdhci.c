@@ -83,7 +83,7 @@ static void sdhci_dump_state(struct sdhci_host *host)
 
 void sdhci_dumpregs(struct sdhci_host *host)
 {
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 //Hexiaosen@PSW.BSP. 2019-11-20 modify for disable sdcard log
 	static int flag = 0;
 
@@ -1282,7 +1282,7 @@ void sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
 
 	WARN_ON(host->cmd);
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 //yh@bsp, 2015-10-21 Add for special card compatible
 //Guohua.Zhong@BSP.Storage.Sdcard,20180630 modify for use is_fsck_process whitelist "fsck"
 	if(host->mmc->card_stuck_in_programing_status && mmc_card_is_removable(host->mmc))
@@ -1293,7 +1293,7 @@ void sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
 		sdhci_finish_mrq(host, cmd->mrq);
 		return;
 	}
-#endif /* VENDOR_EDIT */
+#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 
 	/* Initially, a command has no error */
 	cmd->error = 0;

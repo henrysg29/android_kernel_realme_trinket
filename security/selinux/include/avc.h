@@ -187,9 +187,9 @@ void avc_disable(void);
 DECLARE_PER_CPU(struct avc_cache_stats, avc_cache_stats);
 #endif
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 //Jiemin.Zhu@PSW.Android.SELinux, 2017/11/03, add for security context
 extern int is_oppo_permissive(u32 ssid, u32 tsid, u32 requested);
-#endif /* VENDOR_EDIT */
+#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 #endif /* _SELINUX_AVC_H_ */
 

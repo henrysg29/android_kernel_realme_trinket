@@ -43,7 +43,7 @@
 
 #include "peripheral-loader.h"
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 #include <soc/oppo/oppo_project.h>
 #endif
 
@@ -861,7 +861,7 @@ struct subsys_device *find_subsys_device(const char *str)
 }
 EXPORT_SYMBOL(find_subsys_device);
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /*Murphy@BSP.sensor, 2019/09/10, Add for sensor subsys restart*/
 int restart_sensor_subsys(void)
 {
@@ -897,7 +897,7 @@ int restart_sensor_subsys(void)
 EXPORT_SYMBOL(restart_sensor_subsys);
 #endif
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* Fuchun.Liao@BSP.CHG.Basic 2018/11/27 modify for rf cable detect */
 int op_restart_modem(void)
 {
@@ -915,7 +915,7 @@ int op_restart_modem(void)
 	return 0;
 }
 EXPORT_SYMBOL(op_restart_modem);
-#endif /* VENDOR_EDIT */
+#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 
 static int subsys_start(struct subsys_device *subsys)
 {
@@ -1888,7 +1888,7 @@ struct subsys_device *subsys_register(struct subsys_desc *desc)
 	subsys->dev.release = subsys_device_release;
 	subsys->notif_state = -1;
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 	/* YiXue.Ge@PSW.BSP.Kernel.Driver,2017/05/15,
 	 * Add for init subsyst restart level as RESET_SUBSYS_COUPLED at mp build
 	 */

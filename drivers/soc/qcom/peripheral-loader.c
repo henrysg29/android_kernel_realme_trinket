@@ -43,10 +43,10 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/trace_msm_pil_event.h>
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 //Yugang.Ma@PSW.MultiMedia.MediaServer, 2019/09/16, Add for record vnus ramdump
 #include <soc/oppo/oppo_kevent_feedback.h>
-#endif /* VENDOR_EDIT */
+#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 
 #include "peripheral-loader.h"
 
@@ -425,7 +425,7 @@ setup_fail:
 	return ret;
 }
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 //Yugang.Ma@PSW.MultiMedia.MediaServer, 2019/09/16, Add for record ramdump
 #define CAUSENAME_SIZE 128
 unsigned int BKDRHash(char* str, unsigned int len)
@@ -444,7 +444,7 @@ unsigned int BKDRHash(char* str, unsigned int len)
 
     return hash;
 }
-#endif /*VENDOR_EDIT*/
+#endif /*CONFIG_PRODUCT_REALME_TRINKET*/
 
 /**
  * print_aux_minidump_tocs() - Print the ToC for an auxiliary minidump entry
@@ -489,12 +489,12 @@ int pil_do_ramdump(struct pil_desc *desc,
 	struct pil_seg *seg;
 	int count = 0, ret;
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 //Yugang.Ma@PSW.MultiMedia.MediaServer, 2019/09/16, Add for record ramdump
 	unsigned char payload[100] = "";
 	unsigned int hashid;
 	char strHashSource[CAUSENAME_SIZE];
-#endif /*VENDOR_EDIT*/
+#endif /*CONFIG_PRODUCT_REALME_TRINKET*/
 
 	if (desc->minidump_ss) {
 		pr_debug("Minidump : md_ss_toc->md_ss_toc_init is 0x%x\n",
@@ -555,7 +555,7 @@ int pil_do_ramdump(struct pil_desc *desc,
 		pil_err(desc, "%s: Ramdump collection failed for subsys %s rc:%d\n",
 				__func__, desc->name, ret);
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 //Yugang.Ma@PSW.MultiMedia.MediaServer, 2019/09/16, Add for record ramdump
 	if(strlen(desc->name) > 0 && (strncmp(desc->name,"venus",strlen(desc->name)) == 0)) {
 	    strncpy(strHashSource,desc->name,strlen(desc->name));
@@ -568,7 +568,7 @@ int pil_do_ramdump(struct pil_desc *desc,
 	    scnprintf(payload, sizeof(payload), "NULL$$EventID@@%d$$EventData@@%d$$PackageName@@%s$$fid@@%u",OPPO_MM_DIRVER_FB_EVENT_ID_ADSP_RESET, ret, desc->name, hashid);
 	    upload_mm_kevent_feedback_data(OPPO_MM_DIRVER_FB_EVENT_MODULE_AUDIO,payload);
 	}
-#endif /* VENDOR_EDIT */
+#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 
 	if (desc->subsys_vmid > 0)
 		ret = pil_assign_mem_to_subsys(desc, priv->region_start,

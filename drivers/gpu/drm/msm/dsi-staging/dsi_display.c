@@ -32,7 +32,7 @@
 #include "sde_dbg.h"
 #include "dsi_parser.h"
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* Gou shengjun@PSW.MM.Display.Lcd.Stability, 2018-05-31
  * add for drm notifier for display connect
 */
@@ -44,7 +44,7 @@ extern int oppo_dsi_update_seed_mode(void);
 /* Don't panic if smmu fault*/
 extern int sde_kms_set_smmu_no_fatal_faults(struct drm_device *drm);
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* HQ001218@MM.Display.Driver.Stability. 20200301 */
 int himax_backlight_off = 0;
 int vid_cmd_mode_change = -1;
@@ -71,13 +71,13 @@ extern bool oppo_ffl_trigger_finish;
 #define DSI_CLOCK_BITRATE_RADIX 10
 #define MAX_TE_SOURCE_ID  2
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* Gou shengjun@PSW.MM.Display.Lcd.Stability, 2018-05-31
  * add for drm notifier for display connect
 */
 static struct dsi_display *primary_display;
 static struct dsi_display *secondary_display;
-#endif /* VENDOR_EDIT */
+#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 
 DEFINE_MUTEX(dsi_display_clk_mutex);
 
@@ -218,13 +218,13 @@ void dsi_rect_intersect(const struct dsi_rect *r1,
 	}
 }
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* Gou shengjun@PSW.MM.Display.LCD.Feature,2018-07-13
  * Add for ffl feature
  */
 extern int oppo_start_ffl_thread(void);
 extern void oppo_stop_ffl_thread(void);
-#endif /* VENDOR_EDIT */
+#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 
 int dsi_display_set_backlight(struct drm_connector *connector,
 		void *display, u32 bl_lvl)
@@ -246,7 +246,7 @@ int dsi_display_set_backlight(struct drm_connector *connector,
 		goto error;
 	}
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* Gou shengjun@PSW.MM.Display.LCD.Stable,2018-06-27
  * Add key log for debug
 */
@@ -255,7 +255,7 @@ int dsi_display_set_backlight(struct drm_connector *connector,
 		pr_err("backlight level changed %d -> %d\n",
 		       panel->bl_config.bl_level, bl_lvl);
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* HQ001218@MM.Display.Driver.Stability. 20200301 */
 /*Compare bl_level for power off*/
 	if((panel->bl_config.bl_level) > bl_lvl)
@@ -286,15 +286,15 @@ int dsi_display_set_backlight(struct drm_connector *connector,
 		/* Gou shengjun@PSW.MM.Display.LCD.Stable,2018-10-25 fix ffl dsi abnormal on esd scene */
 		oppo_start_ffl_thread();
 	}
-#endif /* VENDOR_EDIT */
+#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 	panel->bl_config.bl_level = bl_lvl;
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* Gou shengjun@PSW.MM.Display.LCD.Feature,2018-07-12
  * Add for ffl feature
 */
 	if (oppo_ffl_trigger_finish == false)
 		goto error;
-#endif /* VENDOR_EDIT */
+#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 
 	/* scale backlight */
 	bl_scale = panel->bl_config.bl_scale;
@@ -313,7 +313,7 @@ int dsi_display_set_backlight(struct drm_connector *connector,
 		       dsi_display->name, rc);
 		goto error;
 	}
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* Gou shengjun@PSW.MM.Display.LCD.Stability,2018/4/28
  * Add for silence reboot
 */
@@ -323,7 +323,7 @@ int dsi_display_set_backlight(struct drm_connector *connector,
 	} else if (bl_lvl) {
 		lcd_closebl_flag_fp = 0;
 	}
-#endif /*VENDOR_EDIT*/
+#endif /*CONFIG_PRODUCT_REALME_TRINKET*/
 
 	rc = dsi_panel_set_backlight(panel, (u32)bl_temp);
 	if (rc)
@@ -342,14 +342,14 @@ error:
 	return rc;
 }
 
-#ifndef VENDOR_EDIT
+#ifndef CONFIG_PRODUCT_REALME_TRINKET
 static int dsi_display_cmd_engine_enable(struct dsi_display *display)
 /* Gou shengjun@PSW.MM.Display.LCD.Stability,2018/4/28
  * Add for public function
 */
 #else
 int dsi_display_cmd_engine_enable(struct dsi_display *display)
-#endif /*VENDOR_EDIT*/
+#endif /*CONFIG_PRODUCT_REALME_TRINKET*/
 {
 	int rc = 0;
 	int i;
@@ -393,14 +393,14 @@ done:
 	return rc;
 }
 
-#ifndef VENDOR_EDIT
+#ifndef CONFIG_PRODUCT_REALME_TRINKET
 static int dsi_display_cmd_engine_disable(struct dsi_display *display)
 #else
 /* Gou shengjun@PSW.MM.Display.LCD.Stability,2018/4/28
  * Add for public function
 */
 int dsi_display_cmd_engine_disable(struct dsi_display *display)
-#endif /*VENDOR_EDIT*/
+#endif /*CONFIG_PRODUCT_REALME_TRINKET*/
 {
 	int rc = 0;
 	int i;
@@ -603,7 +603,7 @@ static bool dsi_display_is_te_based_esd(struct dsi_display *display)
 }
 
 /* Allocate memory for cmd dma tx buffer */
-#ifndef VENDOR_EDIT
+#ifndef CONFIG_PRODUCT_REALME_TRINKET
 static int dsi_host_alloc_cmd_tx_buffer(struct dsi_display *display)
 #else
 int dsi_host_alloc_cmd_tx_buffer(struct dsi_display *display)
@@ -684,10 +684,10 @@ static bool dsi_display_validate_reg_read(struct dsi_panel *panel)
 	int len = 0, *lenp;
 	int group = 0, count = 0;
 	struct drm_panel_esd_config *config;
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* Gou shengjun@PSW.MM.Display.LCD.Machine, 2019/01/29,add for mm kevent fb. */
 	unsigned char payload[35] = "";
-#endif /*VENDOR_EDIT*/
+#endif /*CONFIG_PRODUCT_REALME_TRINKET*/
 
 	if (!panel)
 		return false;
@@ -710,12 +710,12 @@ static bool dsi_display_validate_reg_read(struct dsi_panel *panel)
 				DRM_ERROR("mismatch: 0x%x\n",
 					  config->return_buf[i]);
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* Gou shengjun@PSW.MM.Display.Lcd.Stability, 2018-12-04, add for solve esd fail */
 				DRM_ERROR("ESD check failed.\n");
 				scnprintf(payload, sizeof(payload), "EventID@@%d$$ESD Error is@@0x%x",OPPO_MM_DIRVER_FB_EVENT_ID_ESD,config->return_buf[i]);
 				upload_mm_kevent_fb_data(OPPO_MM_DIRVER_FB_EVENT_MODULE_DISPLAY,payload);
-#endif  /*VENDOR_EDIT*/
+#endif  /*CONFIG_PRODUCT_REALME_TRINKET*/
 
 				break;
 			}
@@ -995,11 +995,11 @@ exit:
 	if (rc <= 0)
 		atomic_set(&panel->esd_recovery_pending, 1);
 
-//#ifdef ODM_WT_EDIT
+//#ifdef CONFIG_ODM_WT_EDIT
 //Hongzhu.Su@ODM_WT.MM.Display.Lcd., Start 2020/03/9, optimize lcd wakeup time
 		atomic_set(&panel->esd_recovery_flag, 1);
 //Hongzhu.Su@ODM_WT.MM.Display.Lcd., End 2020/03/9, optimize lcd wakeup time
-//#endif /* ODM_WT_EDIT */
+//#endif /* CONFIG_ODM_WT_EDIT */
 	
 
 release_panel_lock:
@@ -1209,7 +1209,7 @@ static bool dsi_display_get_cont_splash_status(struct dsi_display *display)
 	return true;
 }
 
-#ifndef VENDOR_EDIT
+#ifndef CONFIG_PRODUCT_REALME_TRINKET
 int dsi_display_set_power(struct drm_connector *connector,
 		int power_mode, void *disp)
 {
@@ -1234,7 +1234,7 @@ int dsi_display_set_power(struct drm_connector *connector,
 	}
 	return rc;
 }
-#else /*VENDOR_EDIT*/
+#else /*CONFIG_PRODUCT_REALME_TRINKET*/
 /* Gou shengjun@PSW.MM.Display.LCD.Stability,2018/4/13
  * Implement our set power mode here
 */
@@ -1354,7 +1354,7 @@ int dsi_display_set_power(struct drm_connector *connector,
 
 	return rc;
 }
-#endif /*VENDOR_EDIT*/
+#endif /*CONFIG_PRODUCT_REALME_TRINKET*/
 
 static ssize_t debugfs_dump_info_read(struct file *file,
 				      char __user *user_buf,
@@ -4334,10 +4334,10 @@ static int _dsi_display_dyn_update_clks(struct dsi_display *display,
 	/* wait for dynamic refresh done */
 	display_for_each_ctrl(i, display) {
 		ctrl = &display->ctrl[i];
-		#ifdef VENDOR_EDIT
+		#ifdef CONFIG_PRODUCT_REALME_TRINKET
 		/*Guoqiang.Jiang@PSW.MM.Display.LCD.Stable,2020-4-7 add for avoid C/V switch error. */
 		if (!vid_cmd_mode_change) {
-		#endif /* VENDOR_EDIT */
+		#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 		    rc = dsi_ctrl_wait4dynamic_refresh_done(ctrl->ctrl);
 		    if (rc) {
 			    pr_err("wait4dynamic refresh failed for dsi:%d\n", i);
@@ -4346,11 +4346,11 @@ static int _dsi_display_dyn_update_clks(struct dsi_display *display,
 			    pr_info("dynamic refresh done on dsi: %s\n",
 				    i ? "slave" : "master");
 		    }
-		#ifdef VENDOR_EDIT
+		#ifdef CONFIG_PRODUCT_REALME_TRINKET
 		/*Guoqiang.Jiang@PSW.MM.Display.LCD.Stable,2020-4-7 add for avoid C/V switch error. */
 		}
 		vid_cmd_mode_change = 0;
-		#endif /* VENDOR_EDIT */
+		#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 	}
 
 	display_for_each_ctrl(i, display) {
@@ -4471,7 +4471,7 @@ static int dsi_display_dynamic_clk_configure_cmd(struct dsi_display *display,
 {
 	int rc = 0;
 
-#ifndef VENDOR_EDIT
+#ifndef CONFIG_PRODUCT_REALME_TRINKET
 	if (clk_rate <= 0) {
 		pr_err("%s: bitrate should be greater than 0\n", __func__);
 		return -EINVAL;
@@ -4484,7 +4484,7 @@ static int dsi_display_dynamic_clk_configure_cmd(struct dsi_display *display,
 		pr_err("%s: bitrate should be greater than 1040000000\n", __func__);
 		return -EINVAL;
 	}
-#endif /* VENDOR_EDIT */
+#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 
 	if (clk_rate == display->cached_clk_rate) {
 		pr_info("%s: ignore duplicated DSI clk setting\n", __func__);
@@ -5156,14 +5156,14 @@ static ssize_t sysfs_dynamic_dsi_clk_write(struct device *dev,
 	mutex_unlock(&dsi_display_clk_mutex);
 	mutex_unlock(&display->display_lock);
 
-#ifndef VENDOR_EDIT
+#ifndef CONFIG_PRODUCT_REALME_TRINKET
 	return rc;
 #else
 /* Gou shengjun@PSW.MM.Display.Lcd.Stability, 2018-05-31
  * change for limit clk min value.
 */
 	return count;
-#endif /* VENDOR_EDIT */
+#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 
 }
 
@@ -5282,7 +5282,7 @@ static int dsi_display_bind(struct device *dev,
 	if (!display->disp_node)
 		return 0;
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* Gou shengjun@PSW.MM.Display.LCD.Stability,2018/06/05
  * Add for save select panel and give different feature
 */
@@ -5295,7 +5295,7 @@ static int dsi_display_bind(struct device *dev,
 		lcd_closebl_flag = 1;
 		lcd_closebl_flag_fp = 1;
 	}
-#endif /*VENDOR_EDIT*/
+#endif /*CONFIG_PRODUCT_REALME_TRINKET*/
 
 	/* defer bind if ext bridge driver is not loaded */
 	for (i = 0; i < display->panel->host_config.ext_bridge_num; i++) {
@@ -5576,10 +5576,10 @@ static int dsi_display_init(struct dsi_display *display)
 {
 	int rc = 0;
 	struct platform_device *pdev = display->pdev;
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* Gou shengjun@PSW.MM.Display.LCD.Machine, 2019/02/11,add for mm kevent fb. */
 	unsigned char payload[100] = "";
-#endif /*VENDOR_EDIT*/
+#endif /*CONFIG_PRODUCT_REALME_TRINKET*/
 
 	mutex_init(&display->display_lock);
 
@@ -5591,7 +5591,7 @@ static int dsi_display_init(struct dsi_display *display)
 
 	rc = component_add(&pdev->dev, &dsi_display_comp_ops);
 
-#ifndef VENDOR_EDIT
+#ifndef CONFIG_PRODUCT_REALME_TRINKET
 /* Gou shengjun@PSW.MM.Display.LCD.Machine, 2019/02/11,add for mm kevent fb. */
 	if (rc)
 		pr_err("component add failed, rc=%d\n", rc);
@@ -5601,7 +5601,7 @@ static int dsi_display_init(struct dsi_display *display)
 		scnprintf(payload, sizeof(payload), "EventID@@%d$$component add error panel match fault rc=%d",OPPO_MM_DIRVER_FB_EVENT_ID_PANEL_MATCH_FAULT,rc);
 		upload_mm_kevent_fb_data(OPPO_MM_DIRVER_FB_EVENT_MODULE_DISPLAY,payload);
 	}
-#endif /*VENDOR_EDIT*/
+#endif /*CONFIG_PRODUCT_REALME_TRINKET*/
 
 	pr_debug("component add success: %s\n", display->name);
 end:
@@ -5709,7 +5709,7 @@ int dsi_display_dev_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, display);
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* Gou shengjun@PSW.MM.Display.Lcd.Stability, 2018-05-31
  * add for drm notifier for display connect
 */
@@ -5717,7 +5717,7 @@ int dsi_display_dev_probe(struct platform_device *pdev)
 			primary_display = display;
 		else
 			secondary_display = display;
-#endif /* VENDOR_EDIT */
+#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 
 	/* initialize display in firmware callback */
 	if (!firm_req) {
@@ -7654,7 +7654,7 @@ int dsi_display_enable(struct dsi_display *display)
 
 		display->panel->panel_initialized = true;
 		pr_debug("cont splash enabled, display enable not required\n");
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* Gou shengjun@PSW.MM.Display.LCD.Stability,2018/4/28
  * when continous splash enabled, we should set power mode to OPPO_DISPLAY_POWER_ON here
 */
@@ -7748,10 +7748,10 @@ int dsi_display_post_enable(struct dsi_display *display)
 
 	if (display->panel->cur_mode->dsi_mode_flags & DSI_MODE_FLAG_POMS) {
 
-		#ifdef VENDOR_EDIT
+		#ifdef CONFIG_PRODUCT_REALME_TRINKET
 		/*Guoqiang.Jiang@PSW.MM.Display.LCD.Stable,2020-4-7 add for avoid C/V switch error. */
 		vid_cmd_mode_change = 1;
-		#endif /* VENDOR_EDIT */
+		#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 
 		if (display->config.panel_mode == DSI_OP_CMD_MODE)
 			dsi_panel_mode_switch_to_cmd(display->panel);
@@ -7785,14 +7785,14 @@ int dsi_display_pre_disable(struct dsi_display *display)
 
 	mutex_lock(&display->display_lock);
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /*Mark.Yao@PSW.MM.Display.LCD.Stable,2019-05-08 fix race on backlight and power change */
 	display->panel->need_power_on_backlight = false;
 /* Gou shengjun@PSW.MM.Display.LCD.Stable,2018-10-25
  * fix ffl dsi abnormal on esd scene
 */
 	oppo_stop_ffl_thread();
-#endif /* VENDOR_EDIT */
+#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 	/* enable the clk vote for CMD mode panels */
 	if (display->config.panel_mode == DSI_OP_CMD_MODE)
 		dsi_display_clk_ctrl(display->dsi_clk_handle,
@@ -7819,7 +7819,7 @@ int dsi_display_pre_disable(struct dsi_display *display)
 int dsi_display_disable(struct dsi_display *display)
 {
 	int rc = 0;
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* Gou shengjun@PSW.MM.Display.LCD.Stability,2018/4/13
  * Add a notify for when disable display
 */
@@ -7857,7 +7857,7 @@ int dsi_display_disable(struct dsi_display *display)
 	}
 
 	if (!display->poms_pending) {
-		#ifdef VENDOR_EDIT
+		#ifdef CONFIG_PRODUCT_REALME_TRINKET
 		/* Gou shengjun@PSW.MM.Display.LCD.Stability,2018/4/13
 		 * Add a notify for when disable display
 		 */
@@ -7873,7 +7873,7 @@ int dsi_display_disable(struct dsi_display *display)
 			pr_err("[%s] failed to disable DSI panel, rc=%d\n",
 			       display->name, rc);
 
-		#ifdef VENDOR_EDIT
+		#ifdef CONFIG_PRODUCT_REALME_TRINKET
 		/* Gou shengjun@PSW.MM.Display.LCD.Stability,2018/4/13
 		 * Add a notify for when disable display
 		 */
@@ -7977,7 +7977,7 @@ int dsi_display_unprepare(struct dsi_display *display)
 	return rc;
 }
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 /* Gou shengjun@PSW.MM.Display.LCD.Stability,2018/4/28
  * Add for support aod,hbm,seed
 */

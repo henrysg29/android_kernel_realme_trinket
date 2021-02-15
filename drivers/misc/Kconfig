@@ -553,7 +553,7 @@ config QPNP_MISC
 	  and the driver provides an API to check if this interrupt
 	  is available on the current PMIC chip.
 
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 #Fuchun.Liao@BSP.CHG.Basic 2018/11/26 modify for rf cable monitor
 config OPPO_RF_CABLE_MONITOR
 	bool "OPPO rf cable monitor system"
@@ -562,7 +562,7 @@ config OPPO_RF_CABLE_MONITOR
 	default n
 	help
 	  Say Y here to enable OPPO rf cable monitor system support
-#endif /* VENDOR_EDIT */
+#endif /* CONFIG_PRODUCT_REALME_TRINKET */
 
 config OKL4_USER_VIRQ
 	tristate "User space accessible OKL4 virtual interrupts"

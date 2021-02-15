@@ -901,7 +901,7 @@ static int fastrpc_mmap_create(struct fastrpc_file *fl, int fd,
 		else if (map->attr & FASTRPC_ATTR_COHERENT)
 			map->attach->dma_map_attrs |= DMA_ATTR_FORCE_COHERENT;
         /*zhongxuejian@Cam.drv add QCOM adsp patch for reslove supernight capture performance*/
-        #ifdef VENDOR_EDIT
+        #ifdef CONFIG_PRODUCT_REALME_TRINKET
 		/*
 		 * Skip CPU sync if IO Cohernecy is not supported
 		 * as we flush later
@@ -1660,7 +1660,7 @@ static int get_args(uint32_t kernel, struct smq_invoke_ctx *ctx)
 			ctx->overps[oix]->mstart) {
 			if (map && map->buf) {
         /*zhongxuejian@Cam.drv add QCOM adsp patch for reslove supernight capture performance*/
-        #ifdef VENDOR_EDIT
+        #ifdef CONFIG_PRODUCT_REALME_TRINKET
 				dma_buf_begin_cpu_access(map->buf,
 					DMA_TO_DEVICE);
 				dma_buf_end_cpu_access(map->buf,
@@ -1827,7 +1827,7 @@ static void inv_args(struct smq_invoke_ctx *ctx)
 		}
 		if (map && map->buf) {
         /*zhongxuejian@Cam.drv add QCOM adsp patch for reslove supernight capture performance*/
-        #ifdef VENDOR_EDIT
+        #ifdef CONFIG_PRODUCT_REALME_TRINKET
 			dma_buf_begin_cpu_access(map->buf,
 				DMA_FROM_DEVICE);
 			dma_buf_end_cpu_access(map->buf,
@@ -3366,10 +3366,10 @@ static int fastrpc_device_open(struct inode *inode, struct file *filp)
 	/* yanghao@PSW.Kernel.Stability kasan detect the buf_size < snprintf return size caused
 	 * the out of bounds. here just alloc the UL_SIZE 2019-01-05
 	 */
-#ifdef VENDOR_EDIT
+#ifdef CONFIG_PRODUCT_REALME_TRINKET
 	if (buf_size < UL_SIZE)
 		buf_size = UL_SIZE;
-#endif /*VENDOR_EDIT*/
+#endif /*CONFIG_PRODUCT_REALME_TRINKET*/
 
 	VERIFY(err, NULL != (fl->debug_buf = kzalloc(buf_size, GFP_KERNEL)));
 	if (err) {
